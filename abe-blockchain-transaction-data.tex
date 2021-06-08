@@ -5,6 +5,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage[backend=bibtex,style=ieee]{biblatex}
 \addbibresource{abe-blockchain.bib}
 \author{Andrei Cristian}
@@ -528,7 +529,7 @@ In addition, when creating a new private blockchain, the participant can initiat
 \item Some of the attributes may need to get a capability certificate from a trusted authority when applying for a private key.
 \item A capability certificate is usually a digitally signed document to prove the requester has the capability to conduct a business function, e.g., professional certificates, bank certificates, business type certificates, etc.
 \item  Each certificate should be digitally signed by well-known certificate issuers on requestor’s GID.
-\item Then, the trusted authorities can use KenGen or Federated KeyGen to generate private keys for distribution.
+\item Then, the trusted authorities can use \textbf{KenGen} or \textbf{Federated KeyGen} to generate private keys for distribution.
 \item The key distribution is an off-chain procedure and can be done offline.
 \item Any existing public key or shared key-based key distribution schemes can be used.
 
@@ -550,22 +551,212 @@ In addition, when creating a new private blockchain, the participant can initiat
 \item The data object operation diagram is presented in Figure \ref{fig:datobjencdec}.
 \item Both DApp (a web-based app) and smart contract (running within an Ethereum Virtual Machine (EVM)) run locally on a user's site.
 \item The ABE encryption/decryption engine is also interfaced to the DApp locally. The encryption and decryption are performed between the DApp and the blockchain, and the encryption/decryption engine.
-
+\item The data object granularity is determined by access control policies.
+\item Using the policy provided in \textit{Security Policy I}: 
+$\mathcal{P}1=$\textit{The pricing and quantity can be accessed by the supplier and the buyer}.
+\item $\mathcal{P}1$ is an example to specify the data protection when creating the PO.
+\item The PPMP message that will be used on DApp, which runs on ABE enc/dec engine to create the PO blockchain block and can be written as:\\
+$PPMP(T, \{a\}, \mathcal{P},c ,s, o) =$\\
+$= T_{PO}: \{buyer, supplier\} \rightarrow price\&quantity|_{create:\mathcal{P}1,E}$.
+\item PO should also contain an address information for shipment.
+\item If the data access policy is $\mathcal{P}2=$\textit{The shipment address information can be accessed by the buyer and the carrier.}, then the PPMP message can be:\\
+$PPMP(T, \{a\}, \mathcal{P},c ,s, o) =$\\
+$= T_{PO}: \{buyer, carrier\} \rightarrow shipping address|_{create:\mathcal{P}2,E}$.
+\item The PO example presents two data access control policies $\mathcal{P}1$ and $\mathcal{P}2$ are involved, and thus on the blockchain, there should be at least two transactions corresponding to $\mathcal{P}1$ and $\mathcal{P}2$, respectively.
+\item The granularity of encrypted block on the blockchain is determined by using the same data access control policy without needing to create two different DEKs.
+\item Technically, we can combine $\mathcal{P}1$ and $\mathcal{P}2$ as one policy, however, there is no way to use one DEK to protect the data content to fulfill both of them.
+\item  Other crypto actions such as decryption can be similarly created based on the PO example.
+\item The crypto currency involved functions can be achieved by using public blockchain’s payment channel approach .
 \end{itemize}
 
 \end{frame}
 
 \section{PoP Operation and Performance Analysis}
-\begin{frame}{PoP Operation and Performance Analysis}
+\begin{frame}[allowframebreaks]{Complexity Analysis}
+\begin{table}
+\begin{tabular}{|c|c|}
+\hline 
+Schemes & Complexity \\ 
+\hline 
+Setup & $2|U_i|$ \\ 
+\hline 
+KeyGen & $2|S|$ \\ 
+\hline 
+Encrypt & $5n$\textbf{E}$+1$ \\ 
+\hline 
+Decrypt & $2n$\textbf{P}$+ n$\textbf{E} \\ 
+\hline 
+\end{tabular}
+\caption{Computation complexity comparison in terms of the number of pairing operations.}
+\label{tab:compcomplex1}
+\end{table}
+
 \begin{itemize}
-	\item PoP Operation and Performance Analysis
+\item \textbf{E} and \textbf{P} represents exponentiation and pairing respectively.
+\item $U_i$ indicates the set of attributes managed by a certain attribute authority.
+\item S represents the set of attributes assigned to a user.
+\item $n$ is the number of rows of the linear secret sharing matrix used in the encryption and decryption algorithm.
 \end{itemize}
+
+\begin{table}
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Schemes & DABE & device & edge node \\ 
+\hline 
+Setup & $2|U_i|$ & $2|U_i|$ & 0 \\ 
+\hline 
+KeyGen & $2|S|$ & $2|S|$ & 0 \\ 
+\hline 
+Encrypt & $5n$\textbf{E}$+1$ & $2n$\textbf{E}$+1$ & $3n$\textbf{E} \\ 
+\hline 
+Decrypt & $2n$\textbf{P}$+ n$\textbf{E} & $n$\textbf{P}$+ n$\textbf{E} & $n$\textbf{P} \\ 
+\hline 
+\end{tabular} 
+\caption{Complexity of the algorithms of the presented scheme.}
+\label{tab:compcomplex2}
+
+\end{table}
+
+\begin{itemize}
+\item Table \ref{tab:compcomplex2} compares the complexity of the original algorithms and the scheme with Offloaded encryption and decryption.
+\item It is seen that for the encryption the edge node is able to do more than half of the computational work.
+\item As for the decryption, the edge node will share half number of the pairing operations.
+\item Since the main complexity is caused by exponentiation and pairing, we only count the number of these two operations
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Computation Evaluation}
+The evaluation is based on Charm, i.e., a python library for pairing-based cryptography. The evaluation environment is a VM on top of Intel Xeon CPU E5-2650 v2 @ 2.60hZ. Two virtual CPU, 4GB RAM and 80GB hard disk are assigned for this VM.\\
+The performance evaluation of setup, keygen, encrypt and decrypt is presented from Figure \textbf{\ref{fig:setuptime}} to Figure \textbf{\ref{fig:decrypttime}}.\\
+Figure \textbf{\ref{fig:enctimeol}} and Figure \textbf{\ref{fig:dectimeol}} compare the computation overhead between the edge node and the user's end.
+
+\end{frame}
+
+\begin{frame}{Setup and KeyGen times}
+
+\begin{figure}
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[scale=0.17]{setuptime.png}
+		\caption{Setup time.}
+		\label{fig:setuptime}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[scale=0.17]{keygentime.png}
+		\caption{KeyGen time.}
+		\label{fig:keygentime}
+	\end{subfigure}
+	\caption{Setup and KeyGen times.}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Encryption and Decryption times}
+
+\begin{figure}
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[scale=0.17]{encrypttime.png}
+		\caption{Encryption time.}
+		\label{fig:encrypttime}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[scale=0.17]{decrypttime.png}	
+		\caption{Decryption time.}
+		\label{fig:decrypttime}
+	\end{subfigure}
+	\caption{Encryption and Decryption times.}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Computation Overhead with Offloading}
+
+\begin{figure}
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[scale=0.17]{olenctime.png}
+		\caption{Encryption time.}
+		\label{fig:enctimeol}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[scale=0.17]{oldectime.png}
+		\caption{Decryption time.}
+		\label{fig:dectimeol}
+	\end{subfigure}
+	\caption{Computation overhead between the edge node and the user's end.}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Security Analysis}
+
+\begin{itemize}
+\item The presented ABE scheme is based on Lewko's scheme from \cite{lewkowaters}.
+\item Lewko's scheme is proved to be secure against
+	\begin{itemize}
+	\item multiple $(n - 1)$ trusted authority collusion attack;
+	\item collusion among users.
+	\end{itemize}
+\item The solution extends Lewko's scheme to \textbf{Federated Authority Setup} and \textbf{Federated KeyGen}.
+\item The federated setup and key generation algorithm does not cause security issue and break the collusion problem provided by Lewko's scheme.
+\item We have the following theorem:
+\end{itemize}
+\begin{theorem}
+The presented scheme is resistant against attacks from colluded attribute authorities.
+\end{theorem}
+\framebreak
+\begin{proof}
+Assume that $n - 1$ attribute authorities in \textit{AAS} except for one attribute authority \textit{AA'} colluded, each of which provides the value $\alpha_j$ and $y_j$ $(AA_j \in AAS$ and $AA_j \not = AA')$. We denote the set of colluded attribute authorities as CAA. To compromise the presented scheme, the colluded atuthorities need to obtain the value of $\alpha = \Sigma_{j\in AAS}\alpha_j$ and $y = \Sigma_{j \in AAS}y_j$. However, they can only get the value of $\alpha' = \Sigma_{j \in CAA} \alpha_j$ and $y' = \Sigma_{j \in CAA}y_j$. Assume that they successfully calculate the value $\alpha$ and $y$ with access to $\alpha', y', e(g_1,g_1)^{\alpha_j}$ and $g_1^{y_j}(AA_j = AA')$, $\Rightarrow$ the colluded attribute authorities solved well known computationally difficult problem - discrete logarithm problem $\Rightarrow$ contradiction $\Rightarrow$ the presented scheme is resistant against the colluded attribute authorities.
+\end{proof}
+
+\end{frame}
+\begin{frame}{Collusion Resistance Summary}
+
+\begin{itemize}
+\item For an adversary to compromise the system during federated setup and private key generation, the values $\Sigma_{j = 1}^n=\alpha_j$ and $\Sigma_{j = 1}^n y_j$ must be obtained.
+\item Because the discrete logarithm problem is difficult in terms of a prime group that is big, the adversary cannot obtain each individual value $\alpha_j$ and $y_j$.
+\item The only way to do this is attribute authority collusion.
+\item However, it is only when all of the attribute authority colludes together can the private secret get leaked.
+\item If the number of colluding attribute authority is $n - 1$ or fewer than that, the presented federated algorithms are resistant against collusion attacks.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Security Analysis of he Scheme with Offloaded Encryption and Decryption}
+\begin{itemize}
+\item In the Offloaded encryption algorithm, both the message \textit{M} and related information of the shared secret \textit{s} is leaked to the edge node.
+\item The edge node is capable to help offload the computation overhead and also knows nothing about the encrypted message.
+\item In the decryption algorithm, the edge node is only responsible for the private key unrelated computation, i.e., $C_{1,x}\cdot e(H(GID),C_{3,x})$.
+\item Therefore, the private key is not leaked to the edge node, while the edge node can still help do the decryption.
+\item Easily proved that offloaded scheme is secure if the original scheme is secure.
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Main feature comparison with existing major privacy preserving solutions}
+
+\begin{figure}
+\includegraphics[scale=0.3]{blockchainfeatcomp.png}
+\end{figure}
+
 \end{frame}
 
 \section{Summary}
 \begin{frame}{Summary}
 \begin{itemize}
-	\item Summary
+	\item Presented a blockchain solution on how to build private blockchains over public blockchains - PoPs.
+	\item Presented a set of messaging and smart contract protocols - to illustrate privacy-preserving functions of PoP.
+	\item Use of a supply-chain procurement procedure example to illustrate how PoP works.
+	\item A starting point for research and development for the next step:
+	\begin{itemize}
+		\item More functional-rich policy-based access control solutions should be considered: ex. policy/attributes expiration.
+		\item The presented smart contract only focuses on PPP establishment and procurement. Other smart contracts such as cancellation/revocation of a contract should be investigated.
+	\end{itemize}
 \end{itemize}
 \end{frame}
 
