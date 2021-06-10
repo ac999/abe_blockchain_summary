@@ -268,7 +268,7 @@ In this policy, 'pricing' and 'quantity' are accessing objects, and 'supplier' a
 	\begin{itemize}
 	\item The Global Parameter (GP) can be established in advance by a well-known organization,e.g., in the supply-chain industry.
 	\item Since the GP is publicly known, it is not critical for which party to generate the GP.
-	\item The organization selectes a composite \textit{Bilinear} group G or order $N=p_1p_2p_3$.
+	\item The organization selectes a composite \textit{Bilinear} group G of order $N=p_1p_2p_3$.
 	\item $GP=\{N,g_1,H:\{0,1\}* \rightarrow G\}$, where $g_1$ is a generator of group $G_{p_1}$ and the hash function $H$ is mapping function that maps a global identifier to an element of group $G$.
 	\item This algorithm might be run multiple times by different entities so as to generate multiple candidate global parameters in the candidate public parameters and policies (PPP).
 	\end{itemize}
@@ -396,7 +396,7 @@ In this policy, 'pricing' and 'quantity' are accessing objects, and 'supplier' a
 	\item $\cup_{\forall(a, T) \rightarrowtail s}$ denotes the union for all action and transaction pair $(a, T)$ it involves the subject \textit{s}.
 	\item The collection of policies for a smart contract involving the subject s is denoted by $\mathcal{P}(s, a) = \cup_{\forall(a, T) \rightarrowtail s} \mathcal{P}(s, a)$.
 	\item $\mathcal{P}(s, a)$ is the data privacy policy for action \textit{a}.
-	\item Correspondingly, $\mathcal{P}(S), \mathcal{P}(S, a)$ are defindef for S as a subset of subjects.
+	\item Correspondingly, $\mathcal{P}(S), \mathcal{P}(S, a)$ are defined for S as a subset of subjects.
 	\end{itemize}
 \break
 \item \textbf{Definition 4}(Object)
@@ -437,7 +437,7 @@ Based on the above definition, the \textit{PPMP} protocol is actually the implem
 
 \begin{frame}{Smart Contract Protocols}
 
-Presentation of the two smart contracts that are present in the supply-chain example of Figure \ref{fig:supplychain}:
+Presentation of the two smart contracts that are shown in the supply-chain example of Figure \ref{fig:supplychain}:
 
 \end{frame}
 
@@ -514,7 +514,7 @@ A PPP is built based on the following data structure:
 
 \end{itemize}
 
-PPP is built using smart contracts over public blockchain (Figure \ref{fig:pppcontract}), and thus they are searchable. A public directory service can be used to store established PPP. The PPP can be \textbf{resued} as a template for a new private blockchain.\\
+PPP is built using smart contracts over public blockchain (Figure \ref{fig:pppcontract}), and thus they are searchable. A public directory service can be used to store established PPP. The PPP can be \textbf{reused} as a template for a new private blockchain.\\
 In addition, when creating a new private blockchain, the participant can initiate an \textbf{update smart contract} to update the authority list and associated attributes.
 
 \end{frame}
@@ -529,7 +529,7 @@ In addition, when creating a new private blockchain, the participant can initiat
 \item Some of the attributes may need to get a capability certificate from a trusted authority when applying for a private key.
 \item A capability certificate is usually a digitally signed document to prove the requester has the capability to conduct a business function, e.g., professional certificates, bank certificates, business type certificates, etc.
 \item  Each certificate should be digitally signed by well-known certificate issuers on requestor’s GID.
-\item Then, the trusted authorities can use \textbf{KenGen} or \textbf{Federated KeyGen} to generate private keys for distribution.
+\item Then, the trusted authorities can use \textbf{KeyGen} or \textbf{Federated KeyGen} to generate private keys for distribution.
 \item The key distribution is an off-chain procedure and can be done offline.
 \item Any existing public key or shared key-based key distribution schemes can be used.
 
@@ -711,7 +711,7 @@ The presented scheme is resistant against attacks from colluded attribute author
 \end{theorem}
 \framebreak
 \begin{proof}
-Assume that $n - 1$ attribute authorities in \textit{AAS} except for one attribute authority \textit{AA'} colluded, each of which provides the value $\alpha_j$ and $y_j$ $(AA_j \in AAS$ and $AA_j \not = AA')$. We denote the set of colluded attribute authorities as CAA. To compromise the presented scheme, the colluded atuthorities need to obtain the value of $\alpha = \Sigma_{j\in AAS}\alpha_j$ and $y = \Sigma_{j \in AAS}y_j$. However, they can only get the value of $\alpha' = \Sigma_{j \in CAA} \alpha_j$ and $y' = \Sigma_{j \in CAA}y_j$. Assume that they successfully calculate the value $\alpha$ and $y$ with access to $\alpha', y', e(g_1,g_1)^{\alpha_j}$ and $g_1^{y_j}(AA_j = AA')$, $\Rightarrow$ the colluded attribute authorities solved well known computationally difficult problem - discrete logarithm problem $\Rightarrow$ contradiction $\Rightarrow$ the presented scheme is resistant against the colluded attribute authorities.
+Assume that $n - 1$ attribute authorities in \textit{AAS} except for one attribute authority \textit{AA'} colluded, each of which provides the value $\alpha_j$ and $y_j$ $(AA_j \in AAS$ and $AA_j \not = AA')$. We denote the set of colluded attribute authorities as CAA. To compromise the presented scheme, the colluded authorities need to obtain the value of $\alpha = \Sigma_{j\in AAS}\alpha_j$ and $y = \Sigma_{j \in AAS}y_j$. However, they can only get the value of $\alpha' = \Sigma_{j \in CAA} \alpha_j$ and $y' = \Sigma_{j \in CAA}y_j$. Assume that they successfully calculate the value $\alpha$ and $y$ with access to $\alpha', y', e(g_1,g_1)^{\alpha_j}$ and $g_1^{y_j}(AA_j = AA')$, $\Rightarrow$ the colluded attribute authorities solved well known computationally difficult problem - discrete logarithm problem $\Rightarrow$ contradiction $\Rightarrow$ the presented scheme is resistant against the colluded attribute authorities.
 \end{proof}
 
 \end{frame}
